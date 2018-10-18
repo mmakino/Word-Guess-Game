@@ -1,16 +1,40 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Page Title</title>
+  <title>Word Guess Game</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" type="text/css" media="screen" href="assets/css/reset.css" />
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+    crossorigin="anonymous">
   <link rel="stylesheet" type="text/css" media="screen" href="assets/css/style.css" />
   <script src="assets/javascript/game.js"></script>
 </head>
+
 <body>
-  
+  <header>
+    <img src="assets/images/2-WordGuess.jpg" alt="Word Guess (80s Style)" class="banner">
+  </header>
+
+  <section>
+    <div class="start-key">Press any key to get started</div>
+    <div class="game-data">
+      <div><span id="question"></span></div>
+      <div>Number of guesses remaining: <span id="remaining-guesses"></span></div>
+      <div>Letters already guessed: <span id="already-guessed"></span></div>
+      <div>Wins: <span id="num-wins"></span></div>
+    </div>
+  </section>
+
+  <script>
+    document.onkeyup = function (event) {
+      // Determines which key was pressed.
+      var userGuess = event.key;
+      handleKeyInput(userGuess);
+    };
+  </script>
 </body>
+
 </html>
