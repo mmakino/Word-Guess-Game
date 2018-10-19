@@ -19,7 +19,7 @@
   </header>
 
   <section>
-    <div class="start-key">Press any key to get started</div>
+    <div class="start-msg" id="start">Press any key to get started</div>
     <div class="game-data">
       <div><span id="question"></span></div>
       <div>Number of guesses remaining: <span id="remaining-guesses"></span></div>
@@ -29,10 +29,9 @@
   </section>
 
   <script>
+    getElements();
     document.onkeyup = function (event) {
-      // Determines which key was pressed.
-      var userGuess = event.key;
-      handleKeyInput(userGuess);
+      handleKeyInput(event.key);
     };
   </script>
 </body>

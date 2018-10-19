@@ -1,15 +1,11 @@
 /*
 ----------------------------------------------------------------
 TO-DO:
-1. Make input match case-insensitive.
-2. Handle white space in the answer word.
-3. Should display the answer before resetting to the next game?
-4. Make the "Press any key ..." disappear once a game starts
 5. Look into javascript object syntax to re-organize the code.
 ----------------------------------------------------------------
 */
 
-var data = {
+const data = {
   "John Lennon": "Just Like Starting Over",
   "Blondie": "The Tide Is High",
   "Kool & The Gang": "Celebration",
@@ -48,26 +44,28 @@ const artists = [
   "Olivia Newton-John"
 ]
 
-// Variables for the game
-var game = {
-  aWord: "", // question/answer word
-  dispWord: [], // for the word on page
-  guessed: [], // already guessed characters
-  remaining: 6, // remaining attempts counter
-  numWins: 0 // the number of wins counter
+// letiables for the game
+let game = {
+  started: false,   // state of game
+  answer: "",       // answer word/string
+  ansLetters: [],   // unique letters for the answer
+  ansDisplay: [],   // the answer for display on page
+  remaining: 6,     // remaining attempts counter
+  numWins: 0        // the number of wins counter
 }
 
-// Reference to the elements
-var dom = {};
+// Reference to the selector elements
+let elem = {};
 
 //
 // Get html elements
 //
 function getElements() {
-  dom.numWins = document.getElementById("num-wins");
-  dom.aWord = document.getElementById("question");
-  dom.remaining = document.getElementById("remaining-guesses");
-  dom.guessed = document.getElementById("already-guessed");
+  elem.startMsg = document.getElementById("start");
+  elem.numWins = document.getElementById("num-wins");
+  elem.answer = document.getElementById("question");
+  elem.remaining = document.getElementById("remaining-guesses");
+  elem.guessed = document.getElementById("already-guessed");
 }
 
 //
@@ -75,16 +73,24 @@ function getElements() {
 //  
 function handleKeyInput(userInput) {
   console.log("input: " + userInput);
-  var inputChar = userInput;
 
-  if (/^[\w~!@#$%^&*()_+=,.]$/.test(inputChar)) {
-    if (game.remaining === 0 || game.aWord === "") {
-      getElements();
-      start();
+  if (game.started) {
+    elem.startMsg.style.visibility = "hidden";
+
+    if (/^[\w~!@#$%^&*()_+=,.]$/.test(userInput)) {
+      console.log("answer: " + game.answer);
+      if (updateGameData(userInput.toLowerCase())) {
+        userInput = "";        
+      }
+      updatePage(userInput);
     }
-    console.log("answer: " + game.aWord);
-    updateGameData(inputChar);
-    updatePage();
+  }
+  else {
+    if (game.remaining === 0) {
+      elem.startMsg.style.visibility = "hidden";
+    }
+    start();
+    updatePage(userInput = "");
   }
 }
 
@@ -92,79 +98,116 @@ function handleKeyInput(userInput) {
 // (re-)start by initializing the variables
 //
 function start(remainingGuess = 6) {
-  game.guessed = [];
   game.remaining = remainingGuess;
-  game.aWord = pickWord(artists);
-  game.dispWord = "_".repeat(game.aWord.length).split("");
+  game.answer = pickAnswer(artists);
+  game.ansLetters = initAnswerLetters(game.answer);
+  game.ansDisplay = initAnswerDisplay(game.answer);
+  elem.guessed.textContent = "";
+  game.started = true;
 }
 
 //
 // Choose a word from an array
 //
-function pickWord(arrayData) {
-  randNum = Math.random() / arrayData.length;
+function pickAnswer(arrayData) {
   numDigits = arrayData.length.toString().length;
-  ndx = Math.floor(randNum * 10 ** numDigits);
-  console.log("digits = " + numDigits);
-  console.log("index = " + ndx);
+  ndx = Math.floor(Math.random() * 10 ** numDigits) % arrayData.length;
   return arrayData[ndx];
 }
 
 //
+// Initialize unique answer letters in an array, all in lower-case 
+//
+function initAnswerLetters(ansStr) {
+  ansLetters = [];
+  for (let i = 0; i < ansStr.length; i++ ) {
+    ansChar = ansStr.charAt(i).toLowerCase();
+    if (/^\w$/.test(ansChar)) {
+      ansLetters.push(ansChar);
+    }
+  }
+  return new Set(ansLetters);
+}
+
+//
+// Initialize ansDisplay for the web page
+//
+function initAnswerDisplay(ansStr) {
+  ansDisplay = [];
+  for (let i = 0; i < ansStr.length; i++) {
+    ansChar = ansStr[i];
+    ansDisplay[i] = ansChar;
+    if (/\w/.test(ansChar)) {
+      ansDisplay[i] = "_";
+    }
+  }
+  return ansDisplay;
+}
+
+//
 // Update the game data
+// inputChar parameter should be in lower-case
 //  
 function updateGameData(inputChar) {
-  game.guessed.push(inputChar);
-
-  if (game.aWord.toLowerCase().includes(inputChar.toLowerCase())) {
-    updateDispWord(inputChar);
+  // Set.delete returns true if inputChar has been deleted
+  if (game.ansLetters.delete(inputChar)) {
+    updateAnsDisplay(inputChar);
     if (userWon()) {
       game.numWins++;
       start();
-    }
-  } else {
-    game.remaining--;
-    if (game.remaining === 0) {
-      start();
+      return true;
     }
   }
+  else {
+    game.remaining--;
+  }
+
+  return false;
 }
 
 //
 // Update the word displayed on the page
 //  
-function updateDispWord(char) {
-  char = char.toLowerCase();
-  console.log("char: " + char + "  word: " + game.aWord);
+function updateAnsDisplay(char) {
+  console.log("char: " + char + "  word: " + game.answer);
 
-  for (var i = 0; i < game.aWord.length; i++) {
-    if (game.aWord.charAt(i).toLowerCase() === char) {
-      game.dispWord[i] = game.aWord[i];
-      console.log("got " + char + "  word: " + game.dispWord);
-    }
-    if (game.aWord[i] === " ") {
-      game.dispWord[i] = " ";
+  for (let i = 0; i < game.answer.length; i++) {
+    if (game.answer.charAt(i).toLowerCase() === char) {
+      game.ansDisplay[i] = game.answer[i];
+      console.log("got " + char + "  word: " + game.ansDisplay);
     }
   }
-  return game.dispWord;
+  return game.ansDisplay;
 }
 
 //
-// TO-DO: revise because searching for "_" to determine a win is weak
+// Determin whether the user guessed all letters or not
 //
 function userWon() {
-  if (game.dispWord.includes("_")) {
-    return false;
+  if (game.ansLetters.size == 0) {
+    return true;
   }
-  return true;
+  return false;
 }
 
 //
 // Update the page with the game data
 //  
-function updatePage() {
-  dom.numWins.textContent = game.numWins;
-  dom.aWord.textContent = game.dispWord.join(" ");
-  dom.remaining.textContent = game.remaining;
-  dom.guessed.textContent = game.guessed.join(" ");
+function updatePage(inputChar) {
+  elem.numWins.textContent = game.numWins;
+  elem.answer.textContent = game.ansDisplay.join(" ");
+  elem.remaining.textContent = game.remaining;
+  elem.guessed.textContent += " " + inputChar;
+  if (game.remaining === 0) {
+    showAnswer();
+    game.started = false;
+  }
+}
+
+//
+// User lost, so show the answer
+//
+function showAnswer() {
+  elem.answer.textContent = game.answer;
+  elem.startMsg.style.visibility = "visible";
 }
