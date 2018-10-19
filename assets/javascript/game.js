@@ -107,11 +107,11 @@ function start(remainingGuess = 6) {
 }
 
 //
-// Choose a word from an array
+// Choose string from an array
 //
 function pickAnswer(arrayData) {
-  numDigits = arrayData.length.toString().length;
-  ndx = Math.floor(Math.random() * 10 ** numDigits) % arrayData.length;
+  let numDigits = arrayData.length.toString().length;
+  let ndx = Math.floor(Math.random() * 10 ** numDigits) % arrayData.length;
   return arrayData[ndx];
 }
 
@@ -119,7 +119,7 @@ function pickAnswer(arrayData) {
 // Initialize unique answer letters in an array, all in lower-case 
 //
 function initAnswerLetters(ansStr) {
-  ansLetters = [];
+  let ansLetters = [];
   for (let i = 0; i < ansStr.length; i++ ) {
     ansChar = ansStr.charAt(i).toLowerCase();
     if (/^\w$/.test(ansChar)) {
@@ -133,15 +133,12 @@ function initAnswerLetters(ansStr) {
 // Initialize ansDisplay for the web page
 //
 function initAnswerDisplay(ansStr) {
-  ansDisplay = [];
+  let ansDisplay = [];
   for (let i = 0; i < ansStr.length; i++) {
     ansChar = ansStr[i];
     ansDisplay[i] = ansChar;
     if (/\w/.test(ansChar)) {
       ansDisplay[i] = "_";
-    }
-    else if (/\s/.test(ansChar)) {
-      ansDisplay[i] = "      ";
     }
   }
   return ansDisplay;
@@ -152,7 +149,7 @@ function initAnswerDisplay(ansStr) {
 // inputChar parameter should be in lower-case
 //  
 function updateGameData(inputChar) {
-  // Set.delete returns true if inputChar has been deleted
+  // Set.delete() returns true if inputChar has been deleted
   if (game.ansLetters.delete(inputChar)) {
     updateAnsDisplay(inputChar);
     if (userWon()) {
