@@ -29,9 +29,9 @@
   </section>
 
   <script>
-    getElements();
+    webGame = new WebElems();
     document.onkeyup = function(event) {
-      handleKeyInput(event.key);
+      webGame.handleKeyInput(event.key);
     };
   </script>
 </body>

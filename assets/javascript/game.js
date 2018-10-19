@@ -1,7 +1,6 @@
 /*
 ----------------------------------------------------------------
-TO-DO:
- Look into javascript object syntax to re-organize the code.
+80s themed hangman game
 ----------------------------------------------------------------
 */
 
@@ -44,174 +43,187 @@ const artists = [
   "Olivia Newton-John"
 ]
 
-// variables for the game
-let game = {
-  started: false,   // game state boolean
-  answer: "",       // an original answer word/string
-  ansLetters: [],   // unique letters of the answer
-  ansDisplay: [],   // "_ _ _ _" on the web page
-  remaining: 6,     // remaining attempts counter
-  numWins: 0        // the number of wins counter
-}
-
-// Reference to the element selectors
-let elem = {};
-
 //
-// Get html elements
+// A class for the word guess game
 //
-function getElements() {
-  elem.startMsg = document.getElementById("start");
-  elem.numWins = document.getElementById("num-wins");
-  elem.answer = document.getElementById("question");
-  elem.remaining = document.getElementById("remaining-guesses");
-  elem.guessed = document.getElementById("already-guessed");
-}
+class Game80s {
+  constructor(remainingAttempts = 6) {
+    this.started = false; // game state boolean
+    this.answer = ""; // an original answer word/string
+    this.ansLetters = []; // unique letters of the answer
+    this.ansDisplay = []; // "_ _ _ _" on the web page
+    this.numWins = 0; // the number of wins counter  
+    this.remaining = remainingAttempts; // remaining attempts counter
+  }
 
-//
-// Takes user key input
-//  
-function handleKeyInput(userInput) {
-  console.log("input: " + userInput);
+  //
+  // (re-)start by initializing the variables
+  //
+  start(remainingGuess = this.remaining) {
+    this.remaining = remainingGuess;
+    this.answer = this.pickAnswer(artists);
+    this.ansLetters = this.initAnswerLetters(this.answer);
+    this.ansDisplay = this.initAnswerDisplay(this.answer);
+    this.started = true;
+  }
 
-  if (game.started) {
-    elem.startMsg.style.visibility = "hidden";
+  //
+  // Choose string from an array
+  //
+  pickAnswer(arrayData) {
+    let numDigits = arrayData.length.toString().length;
+    let ndx = Math.floor(Math.random() * 10 ** numDigits) % arrayData.length;
+    return arrayData[ndx];
+  }
 
-    // ignore ctrl, shift, etc. key stroke
-    if (/^[\w~!@#$%^&*()_+=,.]$/.test(userInput)) {
-      console.log("answer: " + game.answer);
-      if (updateGameData(userInput.toLowerCase())) {
-        start();
-        elem.guessed.textContent = "";
-        userInput = ""; // user won, so reset
+  //
+  // Initialize unique answer letters in an array, all in lower-case 
+  //
+  initAnswerLetters(ansStr) {
+    let ansLetters = [];
+    for (let i = 0; i < ansStr.length; i++) {
+      let ansChar = ansStr.charAt(i).toLowerCase();
+      if (/^\w$/.test(ansChar)) {
+        ansLetters.push(ansChar);
       }
-      updatePage(userInput);
     }
+    return new Set(ansLetters);
   }
-  else { // "Press any key to start"
-    // the very initial or user lost
-    if (game.remaining === 0) {
-      elem.startMsg.style.visibility = "hidden";
+
+  //
+  // Initialize ansDisplay i.e. "_ _ _ _" for the web page
+  // non-alphanumeric characters will be shown
+  //
+  initAnswerDisplay(ansStr) {
+    let ansDisplay = [];
+    for (let i = 0; i < ansStr.length; i++) {
+      let ansChar = ansStr[i];
+      ansDisplay[i] = ansChar;
+      if (/\w/.test(ansChar)) {
+        ansDisplay[i] = "_";
+      }
     }
-    start();
-    elem.guessed.textContent = "";
-    updatePage(userInput = "");
+    return ansDisplay;
   }
-}
 
-//
-// (re-)start by initializing the variables
-//
-function start(remainingGuess = 6) {
-  game.remaining = remainingGuess;
-  game.answer = pickAnswer(artists);
-  game.ansLetters = initAnswerLetters(game.answer);
-  game.ansDisplay = initAnswerDisplay(game.answer);
-  game.started = true;
-}
-
-//
-// Choose string from an array
-//
-function pickAnswer(arrayData) {
-  let numDigits = arrayData.length.toString().length;
-  let ndx = Math.floor(Math.random() * 10 ** numDigits) % arrayData.length;
-  return arrayData[ndx];
-}
-
-//
-// Initialize unique answer letters in an array, all in lower-case 
-//
-function initAnswerLetters(ansStr) {
-  let ansLetters = [];
-  for (let i = 0; i < ansStr.length; i++ ) {
-    ansChar = ansStr.charAt(i).toLowerCase();
-    if (/^\w$/.test(ansChar)) {
-      ansLetters.push(ansChar);
+  //
+  // Update the game data
+  // inputChar parameter should be in lower-case
+  //  
+  updateGameData(inputChar) {
+    // Set.delete() returns true if inputChar has been deleted
+    if (this.ansLetters.delete(inputChar)) {
+      this.updateAnsDisplay(inputChar);
+      if (this.userWon()) {
+        this.numWins++;
+        return true;
+      }
+    } else {
+      this.remaining--;
     }
-  }
-  return new Set(ansLetters);
-}
 
-//
-// Initialize ansDisplay i.e. "_ _ _ _" for the web page
-// non-alphanumeric characters will be shown
-//
-function initAnswerDisplay(ansStr) {
-  let ansDisplay = [];
-  for (let i = 0; i < ansStr.length; i++) {
-    ansChar = ansStr[i];
-    ansDisplay[i] = ansChar;
-    if (/\w/.test(ansChar)) {
-      ansDisplay[i] = "_";
+    return false;
+  }
+
+  //
+  // Update the word displayed on the page
+  //  
+  updateAnsDisplay(char) {
+    console.log("char: =>" + char + "<- word: " + this.answer);
+
+    for (let i = 0; i < this.answer.length; i++) {
+      if (this.answer.charAt(i).toLowerCase() === char) {
+        this.ansDisplay[i] = this.answer[i];
+        console.log("got " + char + "  word: " + this.ansDisplay);
+      }
     }
+    return this.ansDisplay;
   }
-  return ansDisplay;
-}
 
-//
-// Update the game data
-// inputChar parameter should be in lower-case
-//  
-function updateGameData(inputChar) {
-  // Set.delete() returns true if inputChar has been deleted
-  if (game.ansLetters.delete(inputChar)) {
-    updateAnsDisplay(inputChar);
-    if (userWon()) {
-      game.numWins++;
+  //
+  // Determine whether the user guessed all letters or not
+  //
+  userWon() {
+    if (this.ansLetters.size == 0) {
       return true;
     }
+    return false;
   }
-  else {
-    game.remaining--;
-  }
-
-  return false;
 }
 
 //
-// Update the word displayed on the page
-//  
-function updateAnsDisplay(char) {
-  console.log("char: =>" + char + "<- word: " + game.answer);
+// A class for the game web page
+//
+class WebElems {
+  constructor(game = new Game80s()) {
+    this.startMsg = document.getElementById("start");
+    this.numWins = document.getElementById("num-wins");
+    this.answer = document.getElementById("question");
+    this.remaining = document.getElementById("remaining-guesses");
+    this.guessed = document.getElementById("already-guessed");
+    this.game = game;
+  }
 
-  for (let i = 0; i < game.answer.length; i++) {
-    if (game.answer.charAt(i).toLowerCase() === char) {
-      game.ansDisplay[i] = game.answer[i];
-      console.log("got " + char + "  word: " + game.ansDisplay);
+  //
+  // Takes user key input
+  //  
+  handleKeyInput(userInput) {
+    console.log("input: " + userInput);
+
+    if (this.game.started) {
+      this.startMsg.style.visibility = "hidden";
+
+      // ignore ctrl, shift, etc. key stroke
+      if (/^[\w~!@#$%^&*()_+=,.]$/.test(userInput)) {
+        console.log("answer: " + this.game.answer);
+        if (this.game.updateGameData(userInput.toLowerCase())) {
+          this.start();
+          userInput = ""; // user won, so reset
+        } else {
+          if (this.game.remaining === 0) {
+            userInput = "";
+          }
+        }
+        this.updatePage(userInput);
+      }
+    } else {
+      // the very initial state or user lost
+      if (this.game.remaining === 0) {
+        this.startMsg.style.visibility = "hidden";
+      }
+      this.start();
     }
   }
-  return game.ansDisplay;
-}
 
-//
-// Determine whether the user guessed all letters or not
-//
-function userWon() {
-  if (game.ansLetters.size == 0) {
-    return true;
+  //
+  // (re-)start the game
+  //
+  start(remainingGuess = 6) {
+    this.game.start(remainingGuess);
+    this.guessed.textContent = "";
+    this.updatePage("");
   }
-  return false;
-}
 
-//
-// Update the page with the game data
-//  
-function updatePage(inputChar) {
-  elem.numWins.textContent = game.numWins;
-  elem.answer.textContent = game.ansDisplay.join("");
-  elem.remaining.textContent = game.remaining;
-  elem.guessed.textContent += inputChar.toUpperCase();
-  if (game.remaining === 0) {
-    showAnswer();
-    game.started = false;
+  //
+  // Update the page with the game data
+  //  
+  updatePage(inputChar) {
+    this.numWins.textContent = this.game.numWins;
+    this.answer.textContent = this.game.ansDisplay.join("");
+    this.remaining.textContent = this.game.remaining;
+    this.guessed.textContent += inputChar.toUpperCase();
+
+    if (this.game.remaining === 0) {
+      this.showAnswer();
+      this.game.started = false;
+    }
   }
-}
 
-//
-// User lost, so show the answer
-//
-function showAnswer() {
-  elem.answer.textContent = game.answer;
-  elem.startMsg.style.visibility = "visible";
+  //
+  // User lost, so show the answer
+  //
+  showAnswer() {
+    this.answer.textContent = this.game.answer;
+    this.startMsg.style.visibility = "visible";
+  }
 }
