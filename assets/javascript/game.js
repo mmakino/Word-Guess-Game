@@ -44,17 +44,17 @@ const artists = [
   "Olivia Newton-John"
 ]
 
-// letiables for the game
+// variables for the game
 let game = {
-  started: false,   // state of game
-  answer: "",       // answer word/string
-  ansLetters: [],   // unique letters for the answer
-  ansDisplay: [],   // the answer for display on page
+  started: false,   // game state boolean
+  answer: "",       // an original answer word/string
+  ansLetters: [],   // unique letters of the answer
+  ansDisplay: [],   // "_ _ _ _" on the web page
   remaining: 6,     // remaining attempts counter
   numWins: 0        // the number of wins counter
 }
 
-// Reference to the selector elements
+// Reference to the element selectors
 let elem = {};
 
 //
@@ -77,19 +77,24 @@ function handleKeyInput(userInput) {
   if (game.started) {
     elem.startMsg.style.visibility = "hidden";
 
+    // ignore ctrl, shift, etc. key stroke
     if (/^[\w~!@#$%^&*()_+=,.]$/.test(userInput)) {
       console.log("answer: " + game.answer);
       if (updateGameData(userInput.toLowerCase())) {
-        userInput = "";        
+        start();
+        elem.guessed.textContent = "";
+        userInput = ""; // user won, so reset
       }
       updatePage(userInput);
     }
   }
-  else {
+  else { // "Press any key to start"
+    // the very initial or user lost
     if (game.remaining === 0) {
       elem.startMsg.style.visibility = "hidden";
     }
     start();
+    elem.guessed.textContent = "";
     updatePage(userInput = "");
   }
 }
@@ -102,7 +107,6 @@ function start(remainingGuess = 6) {
   game.answer = pickAnswer(artists);
   game.ansLetters = initAnswerLetters(game.answer);
   game.ansDisplay = initAnswerDisplay(game.answer);
-  elem.guessed.textContent = "";
   game.started = true;
 }
 
@@ -130,7 +134,8 @@ function initAnswerLetters(ansStr) {
 }
 
 //
-// Initialize ansDisplay for the web page
+// Initialize ansDisplay i.e. "_ _ _ _" for the web page
+// non-alphanumeric characters will be shown
 //
 function initAnswerDisplay(ansStr) {
   let ansDisplay = [];
@@ -154,7 +159,6 @@ function updateGameData(inputChar) {
     updateAnsDisplay(inputChar);
     if (userWon()) {
       game.numWins++;
-      start();
       return true;
     }
   }
@@ -181,7 +185,7 @@ function updateAnsDisplay(char) {
 }
 
 //
-// Determin whether the user guessed all letters or not
+// Determine whether the user guessed all letters or not
 //
 function userWon() {
   if (game.ansLetters.size == 0) {
