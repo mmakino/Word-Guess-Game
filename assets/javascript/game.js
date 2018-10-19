@@ -58,12 +58,7 @@ var game = {
 }
 
 // Reference to the elements
-var dom = {
-  numWins: undefined,
-  aWord: undefined,
-  remaining: undefined,
-  guessed: undefined
-}
+var dom = {};
 
 //
 // Get html elements
@@ -78,15 +73,19 @@ function getElements() {
 //
 // Takes user key input
 //  
-function handleKeyInput(inputChar) {
-  console.log("input: " + inputChar);
-  if (game.remaining === 0 || game.aWord === "") {
-    getElements();
-    start();
+function handleKeyInput(userInput) {
+  console.log("input: " + userInput);
+  var inputChar = userInput;
+
+  if (/^[\w~!@#$%^&*()_+=,.]$/.test(inputChar)) {
+    if (game.remaining === 0 || game.aWord === "") {
+      getElements();
+      start();
+    }
+    console.log("answer: " + game.aWord);
+    updateGameData(inputChar);
+    updatePage();
   }
-  console.log("answer: " + game.aWord);
-  updateGameData(inputChar);
-  updatePage();
 }
 
 //
@@ -95,7 +94,6 @@ function handleKeyInput(inputChar) {
 function start(remainingGuess = 6) {
   game.guessed = [];
   game.remaining = remainingGuess;
-  // game.numWins = 0;
   game.aWord = pickWord(artists);
   game.dispWord = "_".repeat(game.aWord.length).split("");
 }
@@ -107,6 +105,7 @@ function pickWord(arrayData) {
   randNum = Math.random() / arrayData.length;
   numDigits = arrayData.length.toString().length;
   ndx = Math.floor(randNum * 10 ** numDigits);
+  console.log("digits = " + numDigits);
   console.log("index = " + ndx);
   return arrayData[ndx];
 }
@@ -117,17 +116,17 @@ function pickWord(arrayData) {
 function updateGameData(inputChar) {
   game.guessed.push(inputChar);
 
-  if (game.aWord.includes(inputChar)) {
+  if (game.aWord.toLowerCase().includes(inputChar.toLowerCase())) {
     updateDispWord(inputChar);
-    if (isUserWon()) {
+    if (userWon()) {
       game.numWins++;
       start();
     }
   } else {
-    game.remaining -= 1;
-  }
-  if (game.remaining === 0) {
-    start();
+    game.remaining--;
+    if (game.remaining === 0) {
+      start();
+    }
   }
 }
 
@@ -135,11 +134,13 @@ function updateGameData(inputChar) {
 // Update the word displayed on the page
 //  
 function updateDispWord(char) {
+  char = char.toLowerCase();
   console.log("char: " + char + "  word: " + game.aWord);
+
   for (var i = 0; i < game.aWord.length; i++) {
-    if (game.aWord.charAt(i) === char) {
-      game.dispWord[i] = char;
-      // console.log("got " + char + "  word: " + game.dispWord);
+    if (game.aWord.charAt(i).toLowerCase() === char) {
+      game.dispWord[i] = game.aWord[i];
+      console.log("got " + char + "  word: " + game.dispWord);
     }
     if (game.aWord[i] === " ") {
       game.dispWord[i] = " ";
@@ -151,11 +152,11 @@ function updateDispWord(char) {
 //
 // TO-DO: revise because searching for "_" to determine a win is weak
 //
-function isUserWon() {
-  if (!game.dispWord.includes("_")) {
-    return true;
+function userWon() {
+  if (game.dispWord.includes("_")) {
+    return false;
   }
-  return false;
+  return true;
 }
 
 //
