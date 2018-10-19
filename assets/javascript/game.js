@@ -1,7 +1,7 @@
 /*
 ----------------------------------------------------------------
 TO-DO:
-5. Look into javascript object syntax to re-organize the code.
+ Look into javascript object syntax to re-organize the code.
 ----------------------------------------------------------------
 */
 
@@ -140,6 +140,9 @@ function initAnswerDisplay(ansStr) {
     if (/\w/.test(ansChar)) {
       ansDisplay[i] = "_";
     }
+    else if (/\s/.test(ansChar)) {
+      ansDisplay[i] = "      ";
+    }
   }
   return ansDisplay;
 }
@@ -169,7 +172,7 @@ function updateGameData(inputChar) {
 // Update the word displayed on the page
 //  
 function updateAnsDisplay(char) {
-  console.log("char: " + char + "  word: " + game.answer);
+  console.log("char: =>" + char + "<- word: " + game.answer);
 
   for (let i = 0; i < game.answer.length; i++) {
     if (game.answer.charAt(i).toLowerCase() === char) {
@@ -195,9 +198,9 @@ function userWon() {
 //  
 function updatePage(inputChar) {
   elem.numWins.textContent = game.numWins;
-  elem.answer.textContent = game.ansDisplay.join(" ");
+  elem.answer.textContent = game.ansDisplay.join("");
   elem.remaining.textContent = game.remaining;
-  elem.guessed.textContent += " " + inputChar;
+  elem.guessed.textContent += inputChar;
   if (game.remaining === 0) {
     showAnswer();
     game.started = false;
