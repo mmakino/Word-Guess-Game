@@ -200,7 +200,7 @@ function updatePage(inputChar) {
   elem.numWins.textContent = game.numWins;
   elem.answer.textContent = game.ansDisplay.join("");
   elem.remaining.textContent = game.remaining;
-  elem.guessed.textContent += inputChar;
+  elem.guessed.textContent += inputChar.toUpperCase();
   if (game.remaining === 0) {
     showAnswer();
     game.started = false;

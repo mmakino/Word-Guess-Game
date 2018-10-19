@@ -30,7 +30,6 @@ section .game-data {
   margin-left: auto;
   margin-right: auto;
   width: 65%;
-  font-style: italic;
   font-size: 1.2em;
 }
 
@@ -38,4 +37,8 @@ section .game-data {
   font-size: 2.0em;
   color: rosybrown;
   letter-spacing: 0.1em;
+}
+
+#already-guessed{
+  letter-spacing: 0.2em;
 }
