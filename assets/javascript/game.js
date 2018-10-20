@@ -4,48 +4,29 @@
 ----------------------------------------------------------------
 */
 
-const data = {
-  "John Lennon": "Just Like Starting Over",
-  "Blondie": "The Tide Is High",
-  "Kool & The Gang": "Celebration",
-  "Dolly Parton": "9 to 5",
-  "Eddie Rabbit": "I Love A Rainy Night",
-  "REO Speedwagon": "Keep On Loving You",
-  "Blondie": "Rapture",
-  "Hall & Oates": "Kiss On My List",
-  "Sheena Easton": "Morning Train (Nine To Five)",
-  "Kim Carnes": "Bette Davis Eyes",
-  "Stars on 45": "Medley",
-  "Air Supply": "The One That You Love",
-  "Rick Springfield": "Jessie’s Girl",
-  "Diana Ross & Lionel Richie": "Endless Love",
-  "Christopher Cross": "Arthur’s Theme (Best That You Can Do)",
-  "Hall & Oates": "Private Eyes",
-  "Olivia Newton-John": "Physical"
+const artistData = {
+  "John Lennon": "Just Like Starting Over (1981)",
+  "Blondie": "The Tide Is High (1981)",
+  "Kool & The Gang": "Celebration (1981)",
+  "REO Speedwagon": "Keep On Loving You (1981)",
+  "Hall & Oates": "Kiss On My List, Private Eyes (1981)",
+  "Rick Springfield": "Jessie’s Girl (1981)",
+  "Diana Ross & Lionel Richie": "Endless Love (1981)",
+  "Olivia Newton-John": "Physical (1981)",
+  "Survivor":	"Eye of the Tiger (1982)",
+  "Paul McCartney & Stevie Wonder":	"Ebony and Ivory (1982)",
+  "Toto":	"Africa (1983)",
+  "Michael Jackson":	"Beat It (1983)",
+  "Eurythmics":	"Sweet Dreams (1983)", 
+  "The Police":	"Every Breath You Take (1983)",
+  "David Bowie":	"Let’s Dance (1983)"
 }
-const artists = [
-  "John Lennon",
-  "Blondie",
-  "Kool & The Gang",
-  "Dolly Parton",
-  "Eddie Rabbit",
-  "REO Speedwagon",
-  "Blondie",
-  "Hall & Oates",
-  "Sheena Easton",
-  "Kim Carnes",
-  "Stars on 45",
-  "Air Supply",
-  "Rick Springfield",
-  "Diana Ross & Lionel Richie",
-  "Christopher Cross",
-  "Hall & Oates",
-  "Olivia Newton-John"
-]
 
-//
-// A class for the word guess game
-//
+/*
+----------------------------------------------------------------
+A class for the word guess game
+----------------------------------------------------------------
+*/
 class Game80s {
   constructor(remainingAttempts = 6) {
     this.started = false; // game state boolean
@@ -61,7 +42,7 @@ class Game80s {
   //
   start(remainingGuess = this.remaining) {
     this.remaining = remainingGuess;
-    this.answer = this.pickAnswer(artists);
+    this.answer = this.pickAnswer(artistData);
     this.ansLetters = this.initAnswerLetters(this.answer);
     this.ansDisplay = this.initAnswerDisplay(this.answer);
     this.started = true;
@@ -70,7 +51,11 @@ class Game80s {
   //
   // Choose string from an array
   //
-  pickAnswer(arrayData) {
+  pickAnswer(inputData) {
+    let arrayData = [];
+    for (let name in inputData) {
+      arrayData.push(name);
+    }
     let numDigits = arrayData.length.toString().length;
     let ndx = Math.floor(Math.random() * 10 ** numDigits) % arrayData.length;
     return arrayData[ndx];
@@ -149,11 +134,20 @@ class Game80s {
     }
     return false;
   }
+
+  //
+  // Hint for the current answer key
+  //
+  hint() {
+    return artistData[this.answer];
+  }
 }
 
-//
-// A class for the game web page
-//
+/*
+----------------------------------------------------------------
+  A class for the game web page
+----------------------------------------------------------------
+*/
 class WebElems {
   constructor(game = new Game80s()) {
     this.startMsg = document.getElementById("start");
@@ -165,7 +159,7 @@ class WebElems {
   }
 
   //
-  // Takes user key input
+  // Takes user key input and play the game
   //  
   handleKeyInput(userInput) {
     console.log("input: " + userInput);
@@ -202,6 +196,7 @@ class WebElems {
     this.game.start(remainingGuess);
     this.guessed.textContent = "";
     this.updatePage("");
+    $("#hint").text("");
   }
 
   //
@@ -225,5 +220,12 @@ class WebElems {
   showAnswer() {
     this.answer.textContent = this.game.answer;
     this.startMsg.style.visibility = "visible";
+  }
+
+  //
+  // Hint for the current answer key
+  //
+  hint() {
+    return this.game.hint();
   }
 }

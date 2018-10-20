@@ -16,20 +16,12 @@ header .banner {
 }
 
 section .start-msg {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  width: 65%;
   font-style: italic;
   font-size: 1.5em;
   color: aqua;
 }
 
 section .game-data {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  width: 65%;
   font-size: 1.2em;
 }
 
@@ -41,4 +33,8 @@ section .game-data {
 
 #already-guessed{
   letter-spacing: 0.2em;
+}
+
+#hint {
+  font-size: 1.2em;
 }
