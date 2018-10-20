@@ -5,6 +5,7 @@
 How many 80s singers and bands do you know? This is an 80s music hit `Hangman` game written in javascript. 
 
 ### How to play
+
 * https://mmakino.github.io/Word-Guess-Game/
 * Press any key to get started, and guess the famous singer or band name from 1980s.
 * If the word is `madonna`, it displays like this when the game starts: `_ _ _ _ _ _ _`.
@@ -14,6 +15,8 @@ How many 80s singers and bands do you know? This is an 80s music hit `Hangman` g
 * After the wins/loses, the game will automatically choose another word to play again. 
 
 ### Repository
+
+```
 ├── assets
 |  ├── css
 |  |  └── style.css
@@ -21,4 +24,4 @@ How many 80s singers and bands do you know? This is an 80s music hit `Hangman` g
 |  └── javascript
 |     └── game.js
 └── index.html
-
+```
