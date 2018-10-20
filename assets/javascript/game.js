@@ -74,8 +74,8 @@ class Game80s {
     for (let name in inputData) {
       arrayData.push(name);
     }
-    let numDigits = arrayData.length.toString().length;
     let ndx = Math.floor(Math.random() * arrayData.length);
+
     return arrayData[ndx];
   }
 
@@ -90,6 +90,7 @@ class Game80s {
         ansLetters.push(ansChar);
       }
     }
+
     return new Set(ansLetters);
   }
 
@@ -106,6 +107,7 @@ class Game80s {
         ansDisplay[i] = "_";
       }
     }
+
     return ansDisplay;
   }
 
@@ -140,6 +142,7 @@ class Game80s {
         console.log("got " + char + "  word: " + this.ansDisplay);
       }
     }
+
     return this.ansDisplay;
   }
 
