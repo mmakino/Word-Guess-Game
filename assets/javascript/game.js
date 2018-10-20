@@ -75,7 +75,7 @@ class Game80s {
       arrayData.push(name);
     }
     let numDigits = arrayData.length.toString().length;
-    let ndx = Math.floor(Math.random() * 10 ** numDigits) % arrayData.length;
+    let ndx = Math.floor(Math.random() * arrayData.length);
     return arrayData[ndx];
   }
 
