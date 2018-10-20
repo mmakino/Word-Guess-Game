@@ -1,12 +1,12 @@
-# JavaScript Assignment
+# Word Guess Game
 
 ### Overview
 
-In this assignment, you'll create one of two possible computer games: Word Guess or Psychic. These apps will run in the browser, and feature dynamically updated HTML and CSS powered by your JavaScript code.
+How many 80s singers and bands do you know? This is an 80s music hit `Hangman` game using javascript. 
 
-### Submission on BCS
-
-* Please submit both the deployed Github.io link to your homework AND the link to the Github Repository!
+### How to play
+* 
+* Press any key to get started, and guess the famous singer or band name from 1980s.
 
 ### Before You Begin
 

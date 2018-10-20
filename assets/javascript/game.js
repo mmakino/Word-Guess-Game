@@ -19,7 +19,25 @@ const artistData = {
   "Michael Jackson":	"Beat It (1983)",
   "Eurythmics":	"Sweet Dreams (1983)", 
   "The Police":	"Every Breath You Take (1983)",
-  "David Bowie":	"Let’s Dance (1983)"
+  "David Bowie":	"Let’s Dance (1983)",
+  "Madonna": "Like A Virgin (1984), Crazy for You (1985)",
+  "Prince": "When Doves Cry (1984)",
+  "Duran Duran": "The Reflex (1984)",
+  "Cyndi Lauper": "Time After Time (1984)",
+  "Culture Club": "Karma Chameleon (1984)",
+  "Van Halen": "Jump (1984)",
+  "Tears for Fears": "Everybody Wants to Rule the World (1985)",
+  "a-ha": "Take On Me (1985)",
+  "Heart": "These Dreams (1986), Alone (1987)",
+  "Whitney Houston": "Greatest Love of All (1986)",
+  "Bon Jovi": "You Give Love a Bad Name (1986)",
+  "The Bangles": "Walk Like an Egyptian (1986)",
+  "U2": "With or Without You (1987)",
+  "Guns N' Roses": "Sweet Child O' Mine (1988)",
+  "UB40": "Red Red Wine (1988)",
+  "The Beach Boys": "Kokomo (1988)",
+  "Bobby Brown": "My Prerogative (1989)",
+  "Paula Abdul": "Straight Up (1989)",
 }
 
 /*
@@ -30,10 +48,10 @@ A class for the word guess game
 class Game80s {
   constructor(remainingAttempts = 6) {
     this.started = false; // game state boolean
-    this.answer = ""; // an original answer word/string
+    this.answer = "";     // an original answer word/string
     this.ansLetters = []; // unique letters of the answer
     this.ansDisplay = []; // "_ _ _ _" on the web page
-    this.numWins = 0; // the number of wins counter  
+    this.numWins = 0;     // the number of wins counter  
     this.remaining = remainingAttempts; // remaining attempts counter
   }
 
