@@ -40,14 +40,16 @@
   </section>
 
   <script>
-    webGame = new WebElems();
+    $(document).ready(function () {
+      let webGame = new WebElems();
 
-    document.onkeyup = function (event) {
-      webGame.handleKeyInput(event.key);
-    };
+      document.onkeyup = function (event) {
+        webGame.handleKeyInput(event.key);
+      };
 
-    $("#hint-button").on("click", function() {
-      $("#hint").text(webGame.hint());
+      $("#hint-button").on("click", function () {
+        $("#hint").text(webGame.hint());
+      });
     });
   </script>
 </body>
